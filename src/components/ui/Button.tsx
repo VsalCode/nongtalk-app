@@ -8,7 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button: React.FC<ButtonProps> = ({ text, customStyle = "", ...props }) => {
   return (
     <button
-      className={["bg-primary w-full rounded-xl cursor-pointer hover:opacity-70 hover:scale-103", customStyle].join(" ")}
+      className={["sm:text-base text-sm bg-primary w-full rounded-xl cursor-pointer hover:opacity-70 hover:scale-103", customStyle].join(" ")}
       {...props}
     >
       {text}
