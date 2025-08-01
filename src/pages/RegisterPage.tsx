@@ -25,8 +25,13 @@ const RegisterPage = () => {
 
   return (
     <main className="flex flex-col lg:flex-row min-h-screen bg-black text-white font-poppins">
-      {/* Left Section - Welcome Content */}  
-      <section className="flex-1 flex flex-col justify-center items-center px-4 py-8 lg:py-0">
+      {/* Left Section - Welcome Content */}
+      <section
+        className="bg-purple-primary-dark flex-1 flex flex-col justify-center items-center px-4 py-8 lg:py-0"
+        style={{
+          background: "radial-gradient(circle, rgba(88,76,214,1) 0%, rgba(20,20,20,1) 50%)",
+        }}
+      >
         <div className="flex flex-col items-center text-center lg:items-start lg:text-left max-w-md lg:max-w-none">
           <img src={logo} alt="logo" className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 mb-4" />
           <img

@@ -2,9 +2,10 @@
 
 @theme {
   --font-poppins: "Poppins", sans-serif;
-  --font-inter: "Inter", sans-serif
+  --font-inter: "Inter", sans-serif;
 
-  --color-primary: "#584CD6";
-  --color-secondary: "#282A37";
-  --color-black: "#1E1E1E";
+  --color-primary: #584CD6;
+  --color-secondary: #282A37;
+  --color-black: #141414;
+  --color-gray: #1E1E1E;  
 }
