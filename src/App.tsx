@@ -2,19 +2,26 @@ import { createBrowserRouter, RouterProvider } from "react-router"
 import RegisterPage from "./pages/RegisterPage"
 import LoginPage from "./pages/LoginPage"
 import AddFriendPage from "./pages/AddFriendPage"
+import ChatAppLayout from "./layout/ChatAppLayout"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <RegisterPage/>
+    element: <RegisterPage />
   },
   {
     path: "/login",
-    element: <LoginPage/>
+    element: <LoginPage />
   },
   {
-    path: "/add-friend",
-    element: <AddFriendPage/>
+    path: "",
+    element: <ChatAppLayout />,
+    children: [
+      {
+        path: "/add-friend",
+        element: <AddFriendPage />
+      }
+    ]
   }
 ])
 
