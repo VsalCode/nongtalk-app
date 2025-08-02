@@ -10,13 +10,13 @@ const TabBar = () => {
       <Link to="/add-friend" className='text-white hover:text-primary ' >
         <HiUserGroup/>
       </Link>
-      <Link to="/add-friend" className='text-white hover:text-primary ' >
+      <Link to="/friends" className='text-white hover:text-primary ' >
         <IoChatbubbles/>
       </Link>
-      <Link to="/add-friend" className='text-white hover:text-primary ' >
+      <Link to="/profile" className='text-white hover:text-primary ' >
         <IoMdPerson/>
       </Link>
-      <Link to="/add-friend" className='text-red-500 hover:opacity-75 ' >
+      <Link to="/login" className='text-red-500 hover:opacity-75 ' >
         <LuLogOut/>
       </Link>
     </nav>
