@@ -8,6 +8,9 @@ import { LuEyeClosed } from "react-icons/lu";
 import logo from "../assets/logo.png"
 import nongbot from "../assets/nongtalk-mascot.png"
 import { useForm } from "react-hook-form"
+import { Link } from "react-router";
+import { yupResolver } from "@hookform/resolvers/yup"
+import { LoginSchema } from "../utils/validation/authValidation";
 
 interface LoginData {
   email: string
@@ -16,7 +19,9 @@ interface LoginData {
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = React.useState(true)
-  const { register, handleSubmit } = useForm<LoginData>()
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginData>({
+    resolver: yupResolver(LoginSchema)
+  })
 
   function handleLogin(data: LoginData) {
     console.log(data);
@@ -61,7 +66,7 @@ const LoginPage = () => {
             {...register("email")}
             childrenLeft={<MdOutlineMail className="text-lg lg:text-xl opacity-70" />}
           />
-
+          {errors.email && <p className="text-red-700 italic text-sm" >{errors.email.message}</p>}
           <InputText
             label="Password Account"
             id="password"
@@ -79,7 +84,9 @@ const LoginPage = () => {
               </button>
             }
           />
-          <Button text="Login" customStyle="py-3 mt-3 lg:mt-5" />
+          {errors.password && <p className="text-red-700 italic text-sm" >{errors.password.message}</p>}
+          <Button text="Login" customStyle="py-3 mt-3 lg:mt-4" />
+          <Link to="/" className="text-blue-600 text-[12px] sm:text-sm underline text-center">Not Have an Account?</Link>
         </form>
       </section>
     </main>

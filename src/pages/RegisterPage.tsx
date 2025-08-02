@@ -8,6 +8,9 @@ import { LuEyeClosed } from "react-icons/lu";
 import logo from "../assets/logo.png"
 import banner from "../assets/banner.png"
 import { useForm } from "react-hook-form"
+import { Link } from "react-router";
+import { yupResolver } from "@hookform/resolvers/yup"
+import { RegisterSchema } from "../utils/validation/authValidation"; 
 
 interface RegisterData {
   email: string
@@ -17,7 +20,9 @@ interface RegisterData {
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = React.useState(true)
-  const { register, handleSubmit } = useForm<RegisterData>()
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
+    resolver: yupResolver(RegisterSchema)
+  })
 
   function handleRegister(data: RegisterData) {
     console.log(data);
@@ -62,7 +67,7 @@ const RegisterPage = () => {
             {...register("email")}
             childrenLeft={<MdOutlineMail className="text-lg lg:text-xl opacity-70" />}
           />
-
+          {errors.email && <p className="text-red-700 italic text-sm" >{errors.email.message}</p>}
           <InputText
             label="Password"
             id="password"
@@ -80,7 +85,7 @@ const RegisterPage = () => {
               </button>
             }
           />
-
+          {errors.password && <p className="text-red-700 italic text-sm" >{errors.password.message}</p>}
           <InputText
             label="Confirm Password"
             id="confirm"
@@ -98,8 +103,9 @@ const RegisterPage = () => {
               </button>
             }
           />
-
-          <Button text="Join Now" customStyle="py-3 mt-3 lg:mt-5" />
+          {errors.confirmPassword && <p className="text-red-700 italic text-sm" >{errors.confirmPassword.message}</p>}
+          <Button text="Join Now" customStyle="py-3 mt-3 md:mt-4" />
+          <Link className="text-blue-600 text-[12px] sm:text-sm underline text-center" to="/login" >Already Have an Account?</Link>
         </form>
       </section>
     </main>
