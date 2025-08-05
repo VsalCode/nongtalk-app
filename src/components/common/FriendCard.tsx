@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
 import { IoChatboxEllipsesSharp } from "react-icons/io5"
+import { FaTrashAlt } from "react-icons/fa";
 
 const initialBackground = [
   "#004030", "#273F4F", "#BB3E00", "#3D365C", "#690B22"
@@ -37,9 +38,14 @@ const FriendCard: React.FC<FriendCardProps> = ({ username = "unknown", usercode 
           <p className="text-sm " >{usercode}</p>
         </div>
       </div>
-      <Link to="/friends?">
-        <IoChatboxEllipsesSharp className="text-4xl opacity-70" />
+      <div className="flex items-center gap-5" >
+        <Link to="/friends?">
+        <IoChatboxEllipsesSharp className="text-2xl opacity-70" />
       </Link>
+      <button className="cursor-pointer" >
+        <FaTrashAlt className="text-xl opacity-75 text-red-400" />
+      </button>
+      </div>
     </div>
   )
 }
