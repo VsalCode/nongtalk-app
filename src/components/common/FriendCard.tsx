@@ -39,7 +39,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ username = "unknown", usercode 
         </div>
       </div>
       <div className="flex items-center gap-5" >
-        <Link to="/friends?">
+        <Link to="/message">
         <IoChatboxEllipsesSharp className="text-2xl opacity-70" />
       </Link>
       <button className="cursor-pointer" >

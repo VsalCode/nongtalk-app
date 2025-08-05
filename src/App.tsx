@@ -5,6 +5,7 @@ import AddFriendPage from "./pages/AddFriendPage"
 import ChatAppLayout from "./layout/ChatAppLayout"
 import FriendsListPage from "./pages/FriendsListPage"
 import ProfilePage from "./pages/ProfilePage"
+import MessagePage from "./pages/MessagePage"
 
 const router = createBrowserRouter([
   {
@@ -25,13 +26,17 @@ const router = createBrowserRouter([
       },
       {
         path: "/friends",
-        element: <FriendsListPage/>
+        element: <FriendsListPage />
       },
       {
         path: "/profile",
-        element: <ProfilePage/>
+        element: <ProfilePage />
       }
     ]
+  },
+  {
+    path: "/message",
+    element: <MessagePage />
   }
 ])
 
