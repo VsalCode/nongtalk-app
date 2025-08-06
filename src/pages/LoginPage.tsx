@@ -8,9 +8,13 @@ import { LuEyeClosed } from "react-icons/lu";
 import logo from "../assets/logo.png"
 import nongbot from "../assets/nongtalk-mascot.png"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup"
 import { LoginSchema } from "../utils/validation/authValidation";
+import toast, { Toaster } from "react-hot-toast";
+import { http } from "../utils/api/axios";
+import loadGIF from "../assets/loading.gif"
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginData {
   email: string
@@ -22,13 +26,42 @@ const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginData>({
     resolver: yupResolver(LoginSchema)
   })
+  const [isLoading, setIsLoading] = React.useState(false)
+  const { setToken } = useAuth()
+  const nav = useNavigate()
 
-  function handleLogin(data: LoginData) {
+  async function handleLogin(data: LoginData) {
     console.log(data);
+    try {
+      setIsLoading(true)
+      const res = await http().post("/auth/login", data)
+      console.log(res);
+      setToken(res.data.results)
+
+      nav("/friends", { replace: true })
+
+    } catch (err) {
+      const errMessage = err instanceof Error ? err.message : "Registration failed"
+      toast.error(errMessage)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <main className="flex bg-black justify-center items-center min-h-screen">
+        <img src={loadGIF} alt="loading-gif" className="w-60" />
+      </main>
+    )
   }
 
   return (
     <main className="flex flex-col lg:flex-row min-h-screen bg-black text-white font-poppins">
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
       {/* Left Section - Welcome Content */}
       <section
         className="bg-purple-primary-dark flex-1 flex flex-col justify-center items-center px-4 py-8 lg:py-0"
@@ -85,7 +118,7 @@ const LoginPage = () => {
             }
           />
           {errors.password && <p className="text-red-700 italic text-sm" >{errors.password.message}</p>}
-          <Button text="Login" customStyle="py-3 mt-3 lg:mt-4" />
+          <Button text={isLoading ? "loading..." : "Login"} customStyle="py-3 mt-3 lg:mt-4" />
           <Link to="/" className="text-blue-600 text-[12px] sm:text-sm underline text-center">Not Have an Account?</Link>
         </form>
       </section>
