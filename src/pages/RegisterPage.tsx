@@ -9,11 +9,12 @@ import { LuEyeClosed } from "react-icons/lu"
 import logo from "../assets/logo.png"
 import banner from "../assets/banner.png"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { RegisterSchema } from "../utils/validation/authValidation"
 import toast, { Toaster } from "react-hot-toast"
 import { http } from "../utils/api/axios"
+import loadGIF from "../assets/loading.gif"
 
 interface RegisterData {
   email: string
@@ -26,6 +27,7 @@ const RegisterPage = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [isLoading, setIsLoading] = React.useState(false)
   const [formData, setFormData] = React.useState<RegisterData | null>(null)
+  const nav = useNavigate()
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm<RegisterData>({
     resolver: yupResolver(RegisterSchema)
@@ -41,14 +43,18 @@ const RegisterPage = () => {
 
     try {
       setIsLoading(true)
-      const res = await http().post("/auth/register", {
+      await http().post("/auth/register", {
         email: formData.email,
         username: username,
         password: formData.password
       })
       
-      console.log(res)
+      // console.log(res)
       toast.success("Account created successfully!")
+
+      setTimeout(() => {
+        nav("/login")
+      }, 4000)
       
       reset()
       setFormData(null)
@@ -65,6 +71,14 @@ const RegisterPage = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false)
     setFormData(null)
+  }
+
+  if(isLoading){
+    return (
+      <main className="flex bg-black justify-center items-center min-h-screen">
+        <img src={loadGIF} alt="loading-gif" className="w-60" />
+      </main>
+    )
   }
 
   return (
