@@ -1,16 +1,19 @@
 import React from "react"
 import Button from "../components/ui/Button"
 import InputText from "../components/ui/InputText"
-import { MdOutlineMail } from "react-icons/md";
-import { TbLockPassword } from "react-icons/tb";
-import { FaEye } from "react-icons/fa";
-import { LuEyeClosed } from "react-icons/lu";
+import Modal from "../components/ui/Modal"
+import { MdOutlineMail } from "react-icons/md"
+import { TbLockPassword } from "react-icons/tb"
+import { FaEye } from "react-icons/fa"
+import { LuEyeClosed } from "react-icons/lu"
 import logo from "../assets/logo.png"
 import banner from "../assets/banner.png"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router";
+import { Link } from "react-router"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { RegisterSchema } from "../utils/validation/authValidation"; 
+import { RegisterSchema } from "../utils/validation/authValidation"
+import toast, { Toaster } from "react-hot-toast"
+import { http } from "../utils/api/axios"
 
 interface RegisterData {
   email: string
@@ -20,16 +23,57 @@ interface RegisterData {
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = React.useState(true)
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterData>({
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [formData, setFormData] = React.useState<RegisterData | null>(null)
+  
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<RegisterData>({
     resolver: yupResolver(RegisterSchema)
   })
 
-  function handleRegister(data: RegisterData) {
-    console.log(data);
+  const handleInitialSubmit = (data: RegisterData) => {
+    setFormData(data)
+    setIsModalOpen(true)
+  }
+
+  const handleFinalRegistration = async (username: string) => {
+    if (!formData) return
+
+    try {
+      setIsLoading(true)
+      const res = await http().post("/auth/register", {
+        email: formData.email,
+        username: username,
+        password: formData.password
+      })
+      
+      console.log(res)
+      toast.success("Account created successfully!")
+      
+      reset()
+      setFormData(null)
+      setIsModalOpen(false)
+      
+    } catch (err) {
+      const errMessage = err instanceof Error ? err.message : "Registration failed"
+      toast.error(errMessage)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setFormData(null)
   }
 
   return (
     <main className="flex flex-col lg:flex-row min-h-screen bg-black text-white font-poppins">
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        />
+      
       {/* Left Section - Welcome Content */}
       <section
         className="bg-purple-primary-dark flex-1 flex flex-col justify-center items-center px-4 py-8 lg:py-0"
@@ -56,21 +100,22 @@ const RegisterPage = () => {
       {/* Right Section - Registration Form */}
       <section className="flex-1 flex flex-col justify-center items-center px-4 py-8 lg:py-0">
         <form
-          onSubmit={handleSubmit(handleRegister)}
+          onSubmit={handleSubmit(handleInitialSubmit)}
           className="bg-gray h-fit py-8 lg:py-11 w-full max-w-md lg:w-[80%] lg:max-w-lg rounded-2xl flex flex-col gap-4 lg:gap-5 justify-center px-6 lg:px-7"
         >
           <InputText
             label="Email"
-            id="email"
+            id="email-regist"
             type="email"
             placeholder="Enter Your Email..."
             {...register("email")}
             childrenLeft={<MdOutlineMail className="text-lg lg:text-xl opacity-70" />}
           />
-          {errors.email && <p className="text-red-700 italic text-sm" >{errors.email.message}</p>}
+          {errors.email && <p className="text-red-700 italic text-sm">{errors.email.message}</p>}
+
           <InputText
             label="Password"
-            id="password"
+            id="password-regist"
             type={showPassword ? "password" : "text"}
             placeholder="Create Your password..."
             childrenLeft={<TbLockPassword className="text-lg lg:text-xl opacity-70" />}
@@ -85,10 +130,11 @@ const RegisterPage = () => {
               </button>
             }
           />
-          {errors.password && <p className="text-red-700 italic text-sm" >{errors.password.message}</p>}
+          {errors.password && <p className="text-red-700 italic text-sm">{errors.password.message}</p>}
+
           <InputText
             label="Confirm Password"
-            id="confirm"
+            id="confirm-pw-regist"
             type={showPassword ? "password" : "text"}
             placeholder="Confirm Your password..."
             {...register("confirmPassword")}
@@ -103,11 +149,27 @@ const RegisterPage = () => {
               </button>
             }
           />
-          {errors.confirmPassword && <p className="text-red-700 italic text-sm" >{errors.confirmPassword.message}</p>}
-          <Button text="Join Now" customStyle="py-3 mt-3 md:mt-4" />
-          <Link className="text-blue-600 text-[12px] sm:text-sm underline text-center" to="/login" >Already Have an Account?</Link>
+          {errors.confirmPassword && <p className="text-red-700 italic text-sm">{errors.confirmPassword.message}</p>}
+
+          <Button 
+            type="submit" 
+            text="Continue" 
+            customStyle="py-3 mt-3 md:mt-4" 
+            disabled={isLoading}
+          />
+          <Link className="text-blue-600 text-[12px] sm:text-sm underline text-center" to="/login">
+            Already Have an Account?
+          </Link>
         </form>
       </section>
+
+      {/* Username Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleFinalRegistration}
+        isLoading={isLoading}
+      />
     </main>
   )
 }
